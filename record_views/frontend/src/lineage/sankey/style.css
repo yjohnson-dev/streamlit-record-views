@@ -1,0 +1,155 @@
+@import "../../shared/lineage.css";
+@import "../../shared/tooltip.css";
+
+.lin-sankey {
+  padding: 4px;
+}
+
+.lin-sankey-canvas {
+  position: relative;
+}
+
+.lin-sankey-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+}
+
+/* The background-colored stroke keeps adjacent ribbons of one color apart. */
+.lin-sankey-ribbon {
+  fill: var(--lin-accent);
+  fill-opacity: 0.28;
+  stroke: var(--lin-surface);
+  stroke-width: 1;
+  transition: fill-opacity 160ms;
+}
+
+.lin-sankey-ribbon.is-lit {
+  fill-opacity: 0.6;
+}
+
+.has-focus .lin-sankey-ribbon:not(.is-lit) {
+  fill-opacity: 0.1;
+}
+
+.lin-sankey-entity {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: var(--lin-sankey-gap);
+  border-radius: var(--lin-radius);
+  pointer-events: none;
+  transition: opacity 160ms;
+}
+
+.lin-sankey-entity > * {
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.lin-sankey-entity.is-before {
+  flex-direction: row-reverse;
+}
+
+.is-vertical .lin-sankey-entity {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.is-vertical .lin-sankey-entity.is-before {
+  flex-direction: column-reverse;
+}
+
+.has-focus .lin-sankey-entity:not(.is-connected),
+.has-active .lin-sankey-entity:not(.is-active):not(.is-connected) {
+  opacity: 0.45;
+}
+
+.has-active .lin-sankey-entity.is-connected[data-id] {
+  opacity: 1;
+}
+
+.lin-sankey-bar {
+  flex: none;
+  background: var(--lin-accent);
+  border-radius: 2px;
+}
+
+.lin-sankey-entity.is-selected .lin-sankey-bar {
+  outline: 2px solid var(--st-primary-color);
+  outline-offset: 1px;
+}
+
+.lin-sankey-label {
+  flex: none;
+  min-width: 0;
+  line-height: 1.25;
+  text-shadow:
+    0 0 3px var(--lin-surface),
+    0 0 3px var(--lin-surface),
+    0 0 6px var(--lin-surface);
+}
+
+.lin-sankey:not(.is-vertical) .is-before .lin-sankey-label {
+  text-align: right;
+}
+
+.lin-sankey-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.lin-sankey-entity:hover .lin-sankey-name,
+.lin-sankey-entity.is-active .lin-sankey-name,
+.lin-sankey-entity.is-selected .lin-sankey-name {
+  color: var(--st-primary-color);
+}
+
+.lin-sankey-meta {
+  display: flex;
+  gap: 0.375rem;
+  min-width: 0;
+  font-size: 0.875rem;
+  color: var(--lin-muted);
+}
+
+.lin-sankey:not(.is-vertical) .is-before .lin-sankey-meta {
+  justify-content: flex-end;
+}
+
+.lin-sankey-total {
+  flex: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--st-text-color);
+}
+
+.lin-sankey-caption {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--lin-muted);
+}
+
+.lin-sankey-empty {
+  color: var(--lin-muted);
+}
+
+.lin-sankey-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  list-style: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lin-sankey-ribbon,
+  .lin-sankey-entity {
+    transition: none;
+  }
+}

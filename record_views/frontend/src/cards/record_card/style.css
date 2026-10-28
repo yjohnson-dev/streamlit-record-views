@@ -1,0 +1,122 @@
+.card-record {
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.card-record.card-open:hover,
+.card-record.card-open:focus-visible,
+.card-expansion .card-record.card-open {
+  border-color: var(--st-primary-color);
+}
+
+.card-expansion .card-section-body {
+  flex: 1;
+}
+
+.card-section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  background: var(--st-secondary-background-color);
+  border-bottom: 1px solid var(--st-border-color);
+}
+
+.card-record.card-filled .card-section-head {
+  background: color-mix(in srgb, var(--st-secondary-background-color) 88%, var(--st-text-color));
+}
+
+.card-section-head .card-icon {
+  color: var(--card-accent);
+}
+
+.card-head-lead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.card-record:not(.card-small):not(.card-compact) .card-title {
+  font-size: 1.25rem;
+}
+
+/* Cells stay on one line; any overflow switches the card to .card-stacked. */
+.card-table {
+  display: grid;
+  grid-template-columns: minmax(5rem, max-content) minmax(0, 1fr);
+  font-size: 0.875rem;
+}
+
+.card-table > div {
+  padding: 0.25rem 1rem 0.25rem 0;
+  border-top: 1px solid var(--st-border-color-light);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.card-table > div:nth-child(odd) {
+  font-weight: 600;
+}
+
+.card-stacked .card-table {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.card-stacked .card-table > div {
+  padding-right: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.card-stacked .card-table > div:nth-child(odd) {
+  padding-bottom: 0;
+}
+
+.card-stacked .card-table > div:nth-child(even) {
+  padding-top: 0;
+  border-top: none;
+}
+
+.card-section-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1rem;
+  padding: 0.375rem 0.75rem;
+  border-top: 1px solid var(--st-border-color);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.card-record.card-small {
+  align-items: stretch;
+}
+
+.card-record.card-small .card-section-head {
+  border-bottom: none;
+  border-right: 1px solid var(--st-border-color);
+  padding: 0.375rem 0.5rem;
+}
+
+.card-small-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.375rem 0.75rem;
+}
+
+.card-record.card-small .card-end {
+  flex: none;
+  font-size: 0.875rem;
+}

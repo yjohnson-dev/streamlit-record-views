@@ -1,0 +1,155 @@
+.card-tile {
+  --card-tile-muted: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  transition: background-color 120ms;
+}
+
+.card-tile.card-small {
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.5rem;
+}
+
+.card-tile.card-open:hover,
+.card-tile.card-open:focus-visible,
+.card-expansion .card-tile.card-open {
+  background: var(--st-secondary-background-color);
+}
+
+.card-tile.card-filled.card-open:hover,
+.card-tile.card-filled.card-open:focus-visible,
+.card-expansion .card-tile.card-filled.card-open {
+  background: color-mix(in srgb, var(--st-secondary-background-color) 88%, var(--st-text-color));
+}
+
+.card-avatar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--st-base-radius);
+  background: var(--card-accent-background);
+  color: var(--card-accent-text);
+}
+
+.card-avatar .card-icon {
+  font-size: 1.125rem;
+}
+
+.card-tile.card-small .card-avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.card-tile.card-small .card-avatar .card-icon {
+  font-size: 0.875rem;
+}
+
+.card-tile.card-large .card-avatar {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.card-tile.card-large .card-avatar .card-icon {
+  font-size: 1.375rem;
+}
+
+.card-tile-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-tile-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-tile .card-title {
+  max-width: none;
+  font-weight: 600;
+}
+
+.card-tile.card-large .card-title {
+  font-size: 1.125rem;
+}
+
+.card-tile .card-end {
+  font-size: 0.875rem;
+}
+
+.card-tile-meta,
+.card-tile-facts {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.card-tile-type {
+  color: var(--card-accent-text);
+}
+
+.card-tile-subtitle,
+.card-tile-label {
+  color: var(--card-tile-muted);
+}
+
+.card-tile-facts {
+  gap: 1rem;
+}
+
+.card-tile-fact {
+  display: inline-flex;
+  gap: 0.375rem;
+}
+
+/* Cells stay on one line; any overflow switches the card to .card-stacked. */
+.card-tile .card-table {
+  display: grid;
+  grid-template-columns: minmax(5rem, max-content) minmax(0, 1fr);
+  gap: 0.125rem 1rem;
+  margin-top: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.card-tile .card-table > div {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.card-tile .card-table > div:nth-child(odd) {
+  color: var(--card-tile-muted);
+}
+
+.card-tile.card-stacked .card-table {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 0;
+}
+
+.card-tile.card-stacked .card-table > div {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.card-tile.card-stacked .card-table > div:nth-child(even) {
+  margin-bottom: 0.25rem;
+}
+
+.card-tile-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin-top: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--card-tile-muted);
+  overflow-wrap: anywhere;
+}

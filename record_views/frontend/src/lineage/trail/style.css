@@ -1,0 +1,84 @@
+@import "../../shared/lineage.css";
+
+.lin-trail-view {
+  min-width: 0;
+}
+
+.lin-trail {
+  --lin-chip-height: calc(1.25rem + 0.5rem + 2px);
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+}
+
+.lin-trail.is-expanded {
+  flex-wrap: wrap;
+  row-gap: 0.375rem;
+}
+
+/* Chips shrink inside their item, which keeps a floor, so chips never overlap. */
+.lin-trail-item {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 4.5rem;
+}
+
+.lin-trail.is-measuring .lin-trail-item,
+.lin-trail-gap {
+  flex: none;
+  min-width: auto;
+}
+
+.lin-trail-item[hidden] {
+  display: none;
+}
+
+.lin-trail-item .lin-node {
+  flex: 0 1 auto;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: var(--lin-chip-height);
+}
+
+.lin-trail-sep {
+  display: inline-flex;
+  flex: none;
+  color: var(--lin-faint);
+}
+
+.lin-trail-sep .card-icon {
+  font-size: 1.125rem;
+}
+
+.lin-trail-more {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: var(--lin-chip-height);
+  padding: 0 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--lin-muted);
+  background: var(--lin-node-fill);
+  border: 1px solid var(--lin-node-line);
+  border-radius: var(--lin-radius);
+  cursor: pointer;
+}
+
+.lin-trail-more:hover,
+.lin-trail-more:focus-visible {
+  color: var(--st-text-color);
+  border-color: var(--st-primary-color);
+  outline: none;
+}
+
+.lin-trail-more .card-icon {
+  font-size: 1rem;
+}

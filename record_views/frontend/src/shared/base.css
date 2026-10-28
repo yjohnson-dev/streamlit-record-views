@@ -1,0 +1,185 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: calc(1rem - 1px);
+  text-align: left;
+  font-family: var(--st-font);
+  font-size: var(--st-base-font-size);
+  line-height: 1.6;
+  color: var(--st-text-color);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--st-base-radius);
+}
+
+.card-small {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+}
+
+.card-open {
+  cursor: pointer;
+  transition: border-color 120ms, background-color 120ms;
+}
+
+.card-open:hover .card-title,
+.card-open:focus-visible .card-title {
+  color: var(--st-primary-color);
+}
+
+.card-open:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--st-primary-color) 50%, transparent);
+}
+
+.card-title {
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-small .card-title {
+  font-weight: 400;
+  flex: none;
+  max-width: 70%;
+}
+
+/* A small card is one row: icon, title, then the caption, headline, and status at the right. */
+.card-small .card-lead {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.card-small .card-lead .card-title {
+  max-width: none;
+}
+
+.card-small .card-end {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.card-small .card-caption {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.card-headline-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.card-headline-label {
+  color: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+}
+
+.card-key {
+  font-weight: 600;
+}
+
+.card-muted,
+.card-missing {
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+}
+
+.card-muted {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-end {
+  margin-left: auto;
+  flex: none;
+}
+
+.card-caption {
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+}
+
+/* A caption in the header sits at its right, so a long one is clipped rather than pushing the row. */
+.card-end > .card-caption {
+  display: inline-block;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.card-stack {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.card-type {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.card-symbol {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+}
+
+.card-type-icon {
+  display: inline-flex;
+  color: var(--card-accent);
+}
+
+.card-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  font-size: 0.875rem;
+}
+
+.card-status-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  border-radius: 50%;
+  background: var(--card-status);
+}

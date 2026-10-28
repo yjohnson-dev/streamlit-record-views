@@ -1,0 +1,96 @@
+/* size="compact": three fixed lines, or one for tile_card; it does not adapt to its width. */
+.card.card-compact {
+  gap: 0.125rem;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.card-compact-head {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-width: 0;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+}
+
+.card.card-compact .card-compact-head .card-icon {
+  flex: none;
+  font-size: 1rem;
+  color: var(--card-accent);
+}
+
+.card.card-compact .card-compact-head .card-type {
+  flex: 1 1 auto;
+}
+
+.card.card-compact .card-compact-line .card-status {
+  flex: 0 1 auto;
+  gap: 0.3rem;
+  font-size: 0.875rem;
+}
+
+.card.card-compact .card-title {
+  max-width: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.card-compact-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+}
+
+.card-compact-last {
+  flex: 0 1 auto;
+}
+
+/* A line too narrow for the status text keeps only its dot. */
+.card-compact-line.card-status-tight .card-status-text {
+  display: none;
+}
+
+.card-compact-line.card-status-tight .card-status-badge .card-dot {
+  display: block;
+}
+
+.card-compact-label {
+  margin-right: 0.375rem;
+}
+
+.card-compact-value {
+  color: var(--st-text-color);
+}
+
+/* tile_card: one line of avatar, title, and status dot. */
+.card.card-compact.card-tile {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.card.card-compact .card-avatar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: calc(var(--st-base-radius) * 0.75);
+  background: var(--card-accent-background);
+  color: var(--card-accent-text);
+}
+
+.card.card-compact .card-avatar .card-icon {
+  font-size: 0.875rem;
+}
+
+.card.card-compact.card-tile .card-title {
+  flex: 1 1 auto;
+}

@@ -1,0 +1,7 @@
+/* Columns of nodes that scroll inside the component when they do not fit. */
+.lin-columns {
+  display: flex;
+  justify-content: safe center;
+  padding: 0.25rem;
+  overflow-x: auto;
+}

@@ -1,0 +1,190 @@
+@import "../../shared/lineage.css";
+
+.lin-steps {
+  --step-pad: 0.5rem;
+  --step-edge: calc(var(--step-pad) + 1px);
+  --step-mark: 1.5rem;
+}
+
+.lin-step {
+  --lin-step-color: var(--st-primary-color);
+}
+
+.lin-step.has-color {
+  --lin-step-color: var(--lin-accent);
+}
+
+.lin-steps-list {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lin-steps.is-vertical .lin-steps-list {
+  flex-direction: column;
+}
+
+/* A forced row scrolls when the steps do not fit; the padding keeps rings. */
+.lin-steps.is-horizontal .lin-steps-list {
+  margin: -0.25rem;
+  padding: 0.25rem;
+  overflow-x: auto;
+}
+
+.lin-steps-item {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.lin-steps.is-horizontal .lin-steps-item {
+  min-width: 5.5rem;
+}
+
+.lin-steps.is-vertical .lin-steps-item {
+  flex: none;
+}
+
+.lin-step {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: var(--step-pad);
+  font-size: 0.875rem;
+  text-align: left;
+  color: var(--st-text-color);
+  border-radius: var(--lin-radius);
+  cursor: pointer;
+  transition: background-color 120ms;
+}
+
+.lin-steps.is-vertical .lin-step {
+  flex-direction: row;
+  gap: 0.75rem;
+}
+
+.lin-step:hover,
+.lin-step.is-active {
+  background: var(--lin-raised);
+}
+
+.lin-step.is-selected {
+  outline: 2px solid var(--st-primary-color);
+  outline-offset: -1px;
+}
+
+.has-active .lin-step:not(.is-active):not(.is-linked) {
+  opacity: 1;
+}
+
+.lin-step-rail {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.lin-steps.is-vertical .lin-step-rail {
+  flex-direction: column;
+}
+
+.lin-step-line {
+  flex: 1 1 auto;
+  background: var(--st-border-color);
+  border-radius: 1px;
+}
+
+.lin-step.is-done .lin-step-line {
+  background: var(--lin-step-color);
+}
+
+.lin-steps.is-horizontal .lin-step-line {
+  height: 2px;
+  margin: 0 calc(var(--step-edge) * -1) 0 var(--step-edge);
+}
+
+.lin-steps.is-vertical .lin-step-line {
+  width: 2px;
+  min-height: 0.5rem;
+  margin: var(--step-edge) 0 calc(var(--step-edge) * -1);
+}
+
+.lin-step-mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--step-mark);
+  height: var(--step-mark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--st-text-color);
+  background: var(--st-secondary-background-color);
+  border: 1px solid var(--st-border-color);
+  border-radius: 50%;
+}
+
+.lin-step-mark .card-icon {
+  font-size: 1rem;
+}
+
+.lin-step.is-done .lin-step-mark {
+  /* White or black, whichever reads on the step color. */
+  color: oklch(from var(--lin-step-color) clamp(0, (0.72 - l) * 1000, 1) 0 0);
+  background: var(--lin-step-color);
+  border-color: var(--lin-step-color);
+}
+
+.lin-step.is-current .lin-step-mark {
+  color: var(--lin-step-color);
+  background: var(--lin-surface);
+  border: 2px solid var(--lin-step-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lin-step-color) 20%, transparent);
+}
+
+.lin-step.is-upcoming .lin-step-mark {
+  color: var(--lin-muted);
+  background: transparent;
+}
+
+.lin-step-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.lin-steps.is-vertical .lin-step-body {
+  padding-top: 0.125rem;
+}
+
+.lin-step-title {
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.lin-step.is-upcoming .lin-step-title {
+  color: var(--lin-muted);
+}
+
+.lin-step-subtitle,
+.lin-step-status,
+.lin-step-caption {
+  font-size: 0.875rem;
+  color: var(--lin-muted);
+}
+
+.lin-step-status {
+  display: flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lin-step {
+    transition: none;
+  }
+}

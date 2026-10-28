@@ -1,0 +1,5 @@
+record_views/frontend/node_modules
+record_views/frontend/build
+.git
+.venv
+__pycache__

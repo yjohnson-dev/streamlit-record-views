@@ -1,0 +1,37 @@
+.lin-tip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 10rem;
+  max-width: min(22rem, calc(100vw - 1rem));
+  white-space: normal;
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+.lin-tip:not(:popover-open) {
+  display: none;
+}
+
+.lin-tip-title {
+  font-weight: 600;
+}
+
+.lin-tip-muted {
+  color: var(--lin-muted);
+}
+
+.lin-tip-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  margin-top: 0.25rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid var(--st-border-color);
+}
+
+.lin-tip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}

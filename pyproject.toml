@@ -1,0 +1,108 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streamlit-record-views"
+version = "0.0.0"
+description = "Lightweight record visualization custom components for Streamlit."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+authors = [
+    { name = "yjohnson-dev" }
+]
+keywords = ["streamlit", "streamlit-component", "records", "cards", "lineage"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "streamlit>=1.51",
+]
+
+[project.urls]
+Source = "https://github.com/yjohnson-dev/streamlit-record-views"
+Issues = "https://github.com/yjohnson-dev/streamlit-record-views/issues"
+
+[project.optional-dependencies]
+dev = [
+    "streamlit==1.66.0",
+    "pandas",
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+include = ["record_views", "record_views.*"]
+
+[tool.setuptools.package-data]
+record_views = [
+    "pyproject.toml",
+    "py.typed",
+    "frontend/build/*",
+]
+
+# Components are declared twice: here for running from a source checkout
+# without installing, and in record_views/pyproject.toml for installed
+# packages. tests/test_packaging.py keeps the two in step.
+[[tool.streamlit.component.components]]
+name = "card"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_trail"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_strip"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_graph"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_flow"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_tree"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_steps"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_timeline"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_sankey"
+asset_dir = "record_views/frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_split"
+asset_dir = "record_views/frontend/build"
+
+[tool.ruff]
+line-length = 80
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+# Each push to main releases when a commit under record_views/ calls for it:
+# a breaking change or feat bumps the minor version below 1.0, a fix the patch.
+[tool.semantic_release]
+commit_parser = "conventional-monorepo"
+commit_message = "chore(release): v{version}"
+version_toml = ["pyproject.toml:project.version", "record_views/pyproject.toml:project.version"]
+allow_zero_version = true
+major_on_zero = false
+
+[tool.semantic_release.commit_parser_options]
+path_filters = ["record_views/**"]

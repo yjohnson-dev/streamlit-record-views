@@ -1,0 +1,38 @@
+@import "../../shared/lineage.css";
+@import "./columns.css";
+
+.lin-graph {
+  gap: 2.5rem;
+}
+
+.lin-graph-layer {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 9rem;
+  max-width: 13rem;
+}
+
+.lin-graph.is-vertical {
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.is-vertical .lin-graph-layer {
+  flex: none;
+  flex-flow: row wrap;
+  min-width: 0;
+  max-width: none;
+}
+
+.is-vertical .lin-graph-layer > .lin-node {
+  flex: 0 1 11rem;
+  min-width: 8rem;
+}
+
+.is-vertical .lin-graph-layer > .lin-node--chip {
+  flex: 0 1 auto;
+  min-width: 0;
+}

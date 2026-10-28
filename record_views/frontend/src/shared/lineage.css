@@ -1,0 +1,250 @@
+@import "./cards.css";
+
+.lineage-root {
+  container-type: inline-size;
+  contain-intrinsic-inline-size: 20rem;
+  --lin-muted: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+  --lin-faint: color-mix(in srgb, var(--st-text-color) 40%, transparent);
+  --lin-radius: var(--st-base-radius);
+  --lin-surface: var(--st-background-color);
+  --lin-raised: var(--st-secondary-background-color);
+  --lin-node-fill: var(--st-background-color);
+  --lin-node-line: var(--st-border-color);
+  --card-fade-width: 1.5rem;
+  font-family: var(--st-font);
+  font-size: var(--st-base-font-size);
+  line-height: 1.4;
+  color: var(--st-text-color);
+}
+
+/* Containment would give content-width components no intrinsic width. */
+.lineage-root--content {
+  container-type: normal;
+}
+
+/* The border and background frame the whole component. */
+.lineage-root--border > .lin-framed,
+.lineage-root--background > .lin-framed {
+  padding: 1rem;
+  border-radius: var(--st-base-radius);
+}
+
+.lineage-root--border > .lin-framed {
+  border: 1px solid var(--st-border-color);
+}
+
+.lineage-root--background > .lin-framed {
+  background: var(--st-secondary-background-color);
+}
+
+.lineage-root--background {
+  --lin-raised: color-mix(in srgb, var(--st-text-color) 7%, var(--st-secondary-background-color));
+  --lin-surface: var(--st-secondary-background-color);
+}
+
+.lineage-root--status-dot .card-status-text,
+.lineage-root--status-dot .lin-status-text {
+  display: none;
+}
+
+.lineage-root.lineage-root--static [data-id] {
+  cursor: default;
+}
+
+.lin-view {
+  min-width: 0;
+}
+
+.lin-label {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.lin-label--small {
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.lin-node {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  min-width: 0;
+  background: var(--lin-node-fill);
+  border: 1px solid var(--lin-node-line);
+  border-radius: var(--lin-radius);
+  cursor: pointer;
+  transition: border-color 120ms, box-shadow 120ms, opacity 160ms;
+}
+
+.lin-node:hover,
+.lin-node.is-active {
+  border-color: color-mix(in srgb, var(--st-primary-color) 55%, var(--st-border-color));
+}
+
+.lin-node.is-selected {
+  outline: 2px solid var(--st-primary-color);
+  outline-offset: -1px;
+}
+
+.lin-node:focus-visible,
+[data-id]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--st-primary-color) 50%, transparent);
+}
+
+.lin-node.is-emphasis {
+  background: var(--lin-raised);
+}
+
+.has-active [data-id]:not(.is-active):not(.is-linked) {
+  opacity: 0.45;
+}
+
+/* Nodes fade their content rather than their background, so connectors stay hidden behind them. */
+.has-active .lin-node[data-id]:not(.is-active):not(.is-linked) {
+  opacity: 1;
+  border-color: color-mix(in srgb, var(--lin-node-line) 50%, transparent);
+}
+
+.has-active .lin-node[data-id]:not(.is-active):not(.is-linked) > * {
+  opacity: 0.45;
+}
+
+.lin-node > * {
+  transition: opacity 160ms;
+}
+
+/* Status markup for layouts that draw their own rows, such as steps. */
+.lin-title {
+  flex: 0 1 auto;
+  font-weight: 600;
+}
+
+.lin-status {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.875rem;
+}
+
+.lin-dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--lin-status);
+}
+
+.lin-canvas {
+  position: relative;
+}
+
+.lin-edges {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.lin-edge {
+  fill: none;
+  stroke: var(--st-border-color);
+  stroke-width: 1.5;
+  transition: stroke 160ms, opacity 160ms;
+}
+
+.lin-edge.is-related {
+  stroke-dasharray: 4 4;
+}
+
+.lin-arrow {
+  fill: context-stroke;
+}
+
+.has-active .lin-edge {
+  opacity: 0.3;
+}
+
+.has-active .lin-edge.is-active {
+  opacity: 1;
+  stroke: var(--st-primary-color);
+}
+
+/* Edges draw in once when a component first mounts. */
+.lin-edge.is-drawing {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lin-draw 450ms ease-out forwards;
+}
+
+/* Layers of one band centered on the same point, so the brightness peaks in the middle. */
+.lin-band path {
+  fill: none;
+  stroke: color-mix(in srgb, var(--st-primary-color) 25%, white);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-opacity: 0.28;
+  stroke-dasharray: var(--band) 2;
+  stroke-dashoffset: calc(var(--band) * 0.5px + 0.2px);
+  animation: lin-flow 1800ms linear infinite;
+}
+
+/* A chain wave sets its own timing for each edge. */
+.lin-band--wave path {
+  animation: none;
+}
+
+@keyframes lin-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes lin-flow {
+  from {
+    stroke-dashoffset: calc(var(--band) * 0.5px + 0.2px);
+  }
+
+  to {
+    stroke-dashoffset: calc(var(--band) * 0.5px - 1.2px);
+  }
+}
+
+.lin-detail {
+  width: 20rem;
+  max-width: calc(100vw - 1rem);
+}
+
+.lin-detail.lin-detail--natural {
+  width: max-content;
+  max-width: min(36rem, calc(100vw - 1rem));
+}
+
+.lin-detail-relation {
+  padding: 0.5rem 0.75rem 0.25rem;
+  color: var(--lin-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lin-node,
+  .lin-edge {
+    transition: none;
+  }
+
+  .lin-edge.is-drawing {
+    stroke-dasharray: none;
+    animation: none;
+  }
+
+  .lin-band {
+    display: none;
+  }
+}

@@ -1,0 +1,215 @@
+@import "./compact.css";
+
+/* Containment zeroes the natural width that horizontal containers use as the flex basis. */
+.card-root {
+  container-type: inline-size;
+  contain-intrinsic-inline-size: 16rem;
+}
+
+.card-root:has(.card-compact),
+.card-root:has(.card-small) {
+  contain-intrinsic-inline-size: 12rem;
+}
+
+.card-root:has(.card-large) {
+  contain-intrinsic-inline-size: 20rem;
+}
+
+/* Containment would give content-width cards no intrinsic width. */
+.card-root--content {
+  container-type: normal;
+}
+
+.card {
+  --card-fade-width: 1.5rem;
+}
+
+/* The card hides beneath its expansion, so none of it shows around the copy. */
+.card.card-expanded {
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+.card-fade * {
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.card-fade > * {
+  flex: none;
+}
+
+.card-fade {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+}
+
+.card-fade.card-overflowing {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 calc(100% - var(--card-fade-width)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 calc(100% - var(--card-fade-width)),
+    transparent
+  );
+}
+
+.card-clamp {
+  max-height: calc(var(--card-lines, 3) * 1.6em);
+  overflow: hidden;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.card-clamp.card-overflowing {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 1.6em), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 1.6em), transparent);
+}
+
+/* Text sized down to fit its width, used for headline figures. */
+.card-shrink {
+  white-space: nowrap;
+}
+
+.card.card-filled {
+  background: var(--st-secondary-background-color);
+}
+
+.card.card-bordered {
+  border-color: var(--st-border-color);
+}
+
+.card .card-lead {
+  flex: 1 1 auto;
+}
+
+.card .card-end {
+  flex: none;
+}
+
+.card-status-badge .card-dot {
+  display: none;
+}
+
+.card-status-badge .card-status-text {
+  padding: 0 0.25rem;
+  border-radius: 0.25rem;
+  color: var(--card-badge-text);
+  background: var(--card-badge-background);
+}
+
+.card-dot-only .card-end .card-status-badge .card-dot {
+  display: block;
+}
+
+/* status_display="dot" shows only the dot, at any size. */
+.card-status-dot .card-status-text {
+  display: none;
+}
+
+.card-status-dot .card-status-badge .card-dot {
+  display: block;
+}
+
+.card-dot-only .card-end .card-status-text {
+  display: none;
+}
+
+/* A narrow card gives up its caption, then its headline, after the status text. */
+.card-small.card-no-caption .card-caption,
+.card-no-caption .card-end > .card-caption {
+  display: none;
+}
+
+.card-no-headline .card-headline-item {
+  display: none;
+}
+
+/* Modeled on Streamlit's help tooltip; shown in the top layer as a popover. */
+.card-tooltip {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  max-width: min(25rem, calc(100vw - 1rem));
+  padding: 0.5rem 0.75rem;
+  font-family: var(--st-font);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  color: var(--st-text-color);
+  background: var(--st-secondary-background-color);
+  border: none;
+  border-radius: var(--st-base-radius);
+  box-shadow: 0 1px 6px color-mix(in srgb, var(--st-text-color) 15%, transparent);
+}
+
+/* An untruncated copy of the card, drawn over it; pointer events reach the card. */
+.card-expansion {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: 0;
+  width: max-content;
+  max-width: min(36rem, calc(100vw - 1rem));
+  overflow: visible;
+  pointer-events: none;
+  color: var(--st-text-color);
+  background: var(--st-background-color);
+  border: none;
+  border-radius: var(--st-base-radius);
+  box-shadow:
+    0 16px 40px -8px rgb(0 0 0 / 0.55),
+    0 6px 14px -4px rgb(0 0 0 / 0.4);
+}
+
+.card-expansion:popover-open {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-expansion > .card {
+  flex: 1;
+}
+
+.card-expansion .card-clamp {
+  max-height: calc(var(--card-lines-expanded, 6) * 1.6em);
+}
+
+.card-truncated {
+  font-size: 0.875rem;
+  font-style: italic;
+  color: color-mix(in srgb, var(--st-text-color) 50%, transparent);
+}
+
+.card-expansion .card-open .card-title {
+  color: var(--st-primary-color);
+}
+
+.card-tooltip,
+.card-expansion {
+  opacity: 0;
+  transition:
+    opacity 150ms ease,
+    display 150ms allow-discrete,
+    overlay 150ms allow-discrete;
+}
+
+.card-tooltip:popover-open,
+.card-expansion:popover-open {
+  opacity: 1;
+}
+
+@starting-style {
+  .card-tooltip:popover-open,
+  .card-expansion:popover-open {
+    opacity: 0;
+  }
+}

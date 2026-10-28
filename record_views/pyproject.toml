@@ -1,0 +1,43 @@
+[project]
+name = "streamlit-record-views"
+version = "0.0.0"
+
+[[tool.streamlit.component.components]]
+name = "card"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_trail"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_strip"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_graph"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_flow"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_tree"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_steps"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_timeline"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_sankey"
+asset_dir = "frontend/build"
+
+[[tool.streamlit.component.components]]
+name = "lineage_split"
+asset_dir = "frontend/build"

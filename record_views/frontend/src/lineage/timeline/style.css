@@ -1,0 +1,211 @@
+@import "../../shared/lineage.css";
+
+.lin-timeline {
+  --lin-tl-gutter: 4.25rem;
+  --lin-tl-rail: 1.25rem;
+  --lin-tl-dot: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.lin-tl-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Narrow: the time sits above the record, beside the rail. */
+.lin-tl-item,
+.lin-tl-day {
+  --lin-tl-dot-top: 0.7rem;
+  display: grid;
+  grid-template-columns: var(--lin-tl-rail) minmax(0, 1fr);
+  grid-template-areas:
+    "rail time"
+    "rail body";
+  column-gap: 0.5rem;
+}
+
+.lin-tl-item.has-time {
+  --lin-tl-dot-top: 0.2rem;
+}
+
+.lin-tl-day-head {
+  display: flex;
+  grid-area: body;
+  align-items: center;
+  gap: 0.625rem;
+  max-width: 32rem;
+  margin: 0;
+  padding: 1.25rem 0 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--lin-muted);
+}
+
+.lin-tl-list > :first-child .lin-tl-day-head {
+  padding-top: 0;
+}
+
+.lin-tl-day-head::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--st-border-color);
+}
+
+.lin-tl-time {
+  grid-area: time;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--lin-muted);
+}
+
+.lin-tl-body {
+  grid-area: body;
+  min-width: 0;
+  max-width: 32rem;
+  padding-bottom: 0.75rem;
+}
+
+.lin-tl-rail {
+  grid-area: rail;
+  position: relative;
+}
+
+.lin-tl-rail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--st-border-color);
+}
+
+.lin-tl-list > :first-child .lin-tl-rail::before {
+  display: none;
+}
+
+.lin-tl-list > :nth-child(2) .lin-tl-rail::before {
+  top: calc(var(--lin-tl-dot-top) + var(--lin-tl-dot) / 2);
+}
+
+.lin-tl-list > :last-child .lin-tl-rail::before {
+  bottom: calc(100% - var(--lin-tl-dot-top) - var(--lin-tl-dot) / 2);
+}
+
+.lin-tl-list > :last-child .lin-tl-body {
+  padding-bottom: 0;
+}
+
+.lin-tl-item .lin-tl-rail::after {
+  content: "";
+  position: absolute;
+  top: var(--lin-tl-dot-top);
+  left: calc(50% - var(--lin-tl-dot) / 2);
+  width: var(--lin-tl-dot);
+  height: var(--lin-tl-dot);
+  border-radius: 50%;
+  background: var(--lin-accent);
+}
+
+.lin-tl-item.role-focus .lin-tl-rail::after {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lin-accent) 30%, transparent);
+}
+
+.lin-tl-item:has(.lin-tl-body > .is-selected) .lin-tl-rail::after {
+  outline: 2px solid var(--st-primary-color);
+  outline-offset: 1px;
+}
+
+/* With a focus, records unrelated to it recede until hovered or selected. */
+.lin-tl-item > :not(.lin-tl-rail),
+.lin-tl-item .lin-tl-rail::after {
+  opacity: var(--lin-tl-fade, 1);
+  transition: opacity 160ms;
+}
+
+.lin-tl-item.role-muted {
+  --lin-tl-fade: 0.5;
+}
+
+.lin-tl-item.role-muted:has(.is-selected, .is-active, .is-linked, :focus-visible) {
+  --lin-tl-fade: 1;
+}
+
+.lin-tl-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.375rem;
+}
+
+.lin-tl-link {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
+  padding: 0.0625rem 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--lin-muted);
+  background: color-mix(in srgb, var(--st-text-color) 8%, transparent);
+  border: 1px solid transparent;
+  border-radius: var(--lin-radius);
+  cursor: pointer;
+  transition: border-color 120ms, color 120ms, opacity 160ms;
+}
+
+.lin-tl-link:hover,
+.lin-tl-link.is-active {
+  color: var(--st-text-color);
+  border-color: color-mix(in srgb, var(--st-primary-color) 55%, var(--st-border-color));
+}
+
+.lin-tl-link.is-selected {
+  color: var(--st-text-color);
+  border-color: var(--st-primary-color);
+}
+
+.lin-tl-link-text {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.lin-tl-link-word {
+  color: var(--lin-muted);
+}
+
+.lin-tl-link-title {
+  color: var(--st-text-color);
+}
+
+.lin-tl-empty {
+  font-size: 0.875rem;
+  color: var(--lin-muted);
+}
+
+/* Wider: times in a gutter left of the rail. */
+@container (min-width: 22rem) {
+  .lin-timeline.has-times :is(.lin-tl-item, .lin-tl-day) {
+    --lin-tl-dot-top: 0.7rem;
+    grid-template-columns: var(--lin-tl-gutter) var(--lin-tl-rail) minmax(0, 1fr);
+    grid-template-areas: "time rail body";
+  }
+
+  .lin-timeline.has-times .lin-tl-time {
+    padding-top: 0.5rem;
+    text-align: right;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lin-tl-item > :not(.lin-tl-rail),
+  .lin-tl-item .lin-tl-rail::after,
+  .lin-tl-link {
+    transition: none;
+  }
+}

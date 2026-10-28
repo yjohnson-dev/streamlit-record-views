@@ -1,0 +1,212 @@
+.card-ledger {
+  --card-ledger-muted: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+}
+
+.card-ledger.card-open:hover,
+.card-ledger.card-open:focus-visible,
+.card-expansion .card-ledger.card-open {
+  border-color: var(--st-primary-color);
+}
+
+.card-ledger.card-small {
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+}
+
+.card-ledger .card-title {
+  max-width: none;
+  font-weight: 600;
+}
+
+.card-figure {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.card-ledger-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--card-ledger-muted);
+}
+
+.card-ledger-head .card-lead {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.card-ledger-head .card-icon {
+  color: var(--card-accent);
+}
+
+.card-headline-label {
+  font-size: 0.875rem;
+  color: var(--card-ledger-muted);
+}
+
+.card-headline-figure {
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.card-ledger.card-large .card-headline-figure {
+  font-size: var(--st-metric-value-font-size, 2.25rem);
+}
+
+.card-statement {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.375rem;
+  border-top: 1px solid var(--st-border-color);
+  font-size: 0.875rem;
+}
+
+.card-statement-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.card-statement-key {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0.125rem 0;
+}
+
+.card-statement-label {
+  flex: 0 1 auto;
+  color: var(--card-ledger-muted);
+}
+
+.card-leader {
+  flex: 1 1 1rem;
+  min-width: 1rem;
+  border-bottom: 1px dotted var(--st-border-color);
+  transform: translateY(-0.25rem);
+}
+
+.card-statement-row .card-figure {
+  flex: none;
+  font-weight: 500;
+}
+
+.card-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: 0.5rem 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--st-border-color);
+  font-size: 0.875rem;
+}
+
+.card-stat-label {
+  font-size: 0.875rem;
+  color: var(--card-ledger-muted);
+}
+
+/* Non-numeric rows, kept apart from the statement so they never set its column widths. */
+.card-details {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.875rem;
+}
+
+.card-statement + .card-details,
+.card-stats + .card-details {
+  margin-top: -0.375rem;
+}
+
+.card-acct {
+  display: inline-flex;
+  gap: 0.25em;
+}
+
+/* Positives reserve the width of ")" so decimals align with negatives. */
+.card-statement.card-accounting .card-acct-decimal {
+  font-variant-numeric: tabular-nums;
+}
+
+.card-statement.card-accounting .card-acct-decimal:not(.card-acct-negative)::after {
+  content: ")";
+  visibility: hidden;
+}
+
+.card-statement.card-accounting {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.card-statement.card-accounting .card-statement-row,
+.card-statement.card-accounting .card-figure,
+.card-statement.card-accounting .card-acct {
+  display: contents;
+}
+
+.card-statement.card-accounting .card-acct-symbol {
+  padding: 0.125rem 0.25rem 0.125rem 0.375rem;
+}
+
+.card-statement.card-accounting .card-acct-amount {
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* Narrow cards, not their expansions, put each label above its amount. */
+@container (max-width: 16rem) {
+  .card-root > .card-ledger .card-leader {
+    display: none;
+  }
+
+  .card-root > .card-ledger .card-statement-row {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .card-root > .card-ledger .card-statement-key {
+    flex-basis: 100%;
+    padding-bottom: 0;
+  }
+
+  .card-root > .card-ledger .card-statement.card-accounting .card-statement-key {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Identity and headline beside the items; the grid wraps them when narrow. */
+.card-ledger .card-split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+  gap: 0.75rem 1.5rem;
+  align-items: start;
+}
+
+.card-split-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.card-split .card-statement {
+  padding-top: 0;
+  border-top: none;
+}
+
+.card-ledger-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1rem;
+  font-size: 0.875rem;
+  color: var(--card-ledger-muted);
+  overflow-wrap: anywhere;
+}

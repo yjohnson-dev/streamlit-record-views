@@ -1,0 +1,182 @@
+.card-property {
+  --card-property-muted: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+}
+
+.card-property.card-open:hover,
+.card-property.card-open:focus-visible,
+.card-expansion .card-property.card-open {
+  border-color: var(--st-primary-color);
+}
+
+.card-property.card-small {
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+}
+
+.card-property .card-end {
+  font-size: 0.875rem;
+}
+
+.card-property .card-title {
+  max-width: none;
+  font-size: 1.125rem;
+}
+
+.card-property.card-small .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.card-property.card-large .card-title {
+  font-size: 1.375rem;
+}
+
+.card-meta-line,
+.card-chip-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card-meta-line {
+  font-size: 0.875rem;
+  color: var(--card-property-muted);
+}
+
+.card-meta-line .card-lead {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.card-meta-line .card-icon {
+  color: var(--card-accent);
+}
+
+.card-meta-line .card-end {
+  font-size: 0.875rem;
+}
+
+.card-chip-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--card-accent-text);
+  background: var(--card-accent-background);
+}
+
+.card-chip-type .card-icon {
+  font-size: 0.875rem;
+}
+
+.card-specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  gap: 0.625rem 1rem;
+}
+
+.card-property.card-large .card-specs {
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.875rem 1.25rem;
+}
+
+.card-spec-label {
+  font-size: 0.875rem;
+  color: var(--card-property-muted);
+}
+
+.card-spec-value {
+  --card-lines: 3;
+  --card-lines-expanded: 5;
+  font-weight: 600;
+}
+
+/* Identity beside the specs; the grid wraps them into a stack when narrow. */
+.card-property .card-split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+  gap: 0.875rem 1.5rem;
+}
+
+.card-property .card-split .card-specs {
+  grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+  gap: 0.625rem 1rem;
+  align-content: start;
+}
+
+.card-split-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.card-description {
+  --card-lines: 3;
+  --card-lines-expanded: 10;
+  font-size: 0.875rem;
+  color: var(--card-property-muted);
+}
+
+.card-property.card-large .card-description {
+  --card-lines: 5;
+}
+
+/* In split, the description fills the height the specs leave beside it. */
+.card-split .card-description {
+  flex: 1 1 0;
+  min-height: calc(3 * 1.6em);
+  max-height: none;
+}
+
+.card-expansion .card-split .card-description {
+  flex: none;
+  max-height: calc(var(--card-lines-expanded) * 1.6em);
+}
+
+/* Narrow cards, not their expansions, list specs as label/value lines. */
+@container (max-width: 20rem) {
+  .card-root > .card-property .card-specs {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+  }
+
+  .card-root > .card-property .card-spec {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .card-root > .card-property .card-spec-label {
+    flex: none;
+  }
+
+  .card-root > .card-property .card-spec-value {
+    --card-lines: 2;
+    min-width: 0;
+    text-align: right;
+  }
+
+  .card-root > .card-property .card-description {
+    --card-lines: 3;
+  }
+}
+
+.card-property-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--st-border-color-light);
+  font-size: 0.875rem;
+  color: var(--card-property-muted);
+  overflow-wrap: anywhere;
+}
