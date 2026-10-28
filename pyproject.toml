@@ -46,9 +46,6 @@ record_views = [
     "frontend/build/*",
 ]
 
-# Components are declared twice: here for running from a source checkout
-# without installing, and in record_views/pyproject.toml for installed
-# packages. tests/test_packaging.py keeps the two in step.
 [[tool.streamlit.component.components]]
 name = "card"
 asset_dir = "record_views/frontend/build"
@@ -95,8 +92,6 @@ line-length = 80
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-# Each push to main releases when a commit under record_views/ calls for it:
-# a breaking change or feat bumps the minor version below 1.0, a fix the patch.
 [tool.semantic_release]
 commit_parser = "conventional-monorepo"
 commit_message = "chore(release): v{version}"
