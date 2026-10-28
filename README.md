@@ -8,9 +8,6 @@ Record cards and lineage components for Streamlit.
 pip install streamlit-record-views
 ```
 
-The repository does not contain the compiled frontend, so `pip install` from a git
-checkout does not work.
-
 ## Use
 
 ```python
@@ -34,14 +31,3 @@ card(summary)
 lineage_flow([order, invoice], [Link(order, invoice, "billed as")])
 ```
 
-The title, subtitle, and caption each take text or a `RecordField`. A labeled title
-reads "Sales Order SO-0001", and a labeled subtitle or caption reads "Customer: Acme"
-with the label in bold. Cards draw only the text you give them: the `timestamp` places
-a record in time order for the lineage components, and the caption shows a date.
-The `headline` option of every card configuration picks the field a card leads with.
-
-A `CardView` defines a card: the record, its configuration, its size, and what hovering
-it shows. `card()` renders it. The hover can show the same card at another size, or
-another `CardView` with its own record, configuration, and size.
-
-Every function and class has a docstring.
