@@ -1,7 +1,7 @@
 import { compactLedger } from "../../shared/compact";
 import { div, el, icon, identity, span, typeIcon, value } from "../../shared/dom";
-import { type FieldValue, accountingParts, formatNumber } from "../../shared/format";
-import type { CardData, ViewData } from "../../shared/types";
+import { type FieldValue, accountingParts, formatNumber, plural } from "../../shared/format";
+import type { CardData, LedgerItemData, ViewData } from "../../shared/types";
 import { slots, smallCaption, smallEnd, smallLead } from "../../shared/view";
 
 type Field = [string, FieldValue];
@@ -76,12 +76,66 @@ const stats = (d: ViewData, rows: Field[]): HTMLElement | null =>
 const details = (d: ViewData, rows: Field[]): HTMLElement | null =>
   div("card-details", ...rows.map((field) => leaderRow(field, value(d, field))));
 
+function itemRow(
+  d: ViewData,
+  item: LedgerItemData,
+  index: number,
+  quantities: boolean
+): HTMLElement {
+  // Each part keeps to one line and fades when cut off; hovering the line shows it in full.
+  const row = el(
+    "div",
+    "card-item",
+    quantities
+      ? el(
+          "span",
+          "card-item-qty card-fade",
+          item.quantity === null ? "" : `${formatNumber(item.quantity)} \u00d7`
+        )
+      : null,
+    el(
+      "div",
+      "card-item-text",
+      span("card-item-label card-fade", item.label),
+      span("card-item-detail card-fade", item.detail),
+      span("card-item-note card-fade", item.note)
+    ),
+    el("span", "card-figure card-item-amount", item.amount === null ? "" : figure(d, [item.label, item.amount]))
+  );
+  row.dataset.index = String(index);
+  if (item.id !== null) {
+    // The card's click handler reads data-item, so a line reports itself instead of the card.
+    // Python sends ids only when card() has on_item, so a disabled card's lines stay live then.
+    row.classList.add("card-item-open");
+    row.dataset.item = item.id;
+    row.tabIndex = 0;
+    row.setAttribute("role", "button");
+  }
+  return row;
+}
+
+const itemList = (d: ViewData): HTMLElement | null => {
+  const items = d.items ?? [];
+  if (!items.length) return null;
+  const quantities = items.some((item) => item.quantity !== null);
+  return div(
+    quantities ? "card-items card-items-qty" : "card-items",
+    ...items.map((item, index) => itemRow(d, item, index, quantities)),
+    d.moreItems ? div("card-items-more", `${plural(d.moreItems, "more line")}`) : null
+  );
+};
+
 const metaLine = (d: CardData, headItem: HTMLElement | null): HTMLElement | null =>
   div(
     "card-ledger-head",
     div("card-lead card-fade", icon(d.icon), span("", d.recordType)),
     span("card-end", headItem)
   );
+
+// The type and title on the left and the headline figure on the right; they stack when the
+// card is too narrow for both.
+const top = (d: ViewData, headItem: HTMLElement | null): HTMLElement | null =>
+  div("card-ledger-top", div("card-ledger-id", metaLine(d, headItem), identity(d)), headline(d));
 
 export function renderLedgerCard(d: ViewData): (HTMLElement | null)[] {
   if (d.size === "compact") return compactLedger(d);
@@ -101,6 +155,7 @@ export function renderLedgerCard(d: ViewData): (HTMLElement | null)[] {
       metaLine(d, headItem),
       headline(d),
       identity(d),
+      itemList(d),
       stats(d, items),
       details(d, other),
       footer,
@@ -114,15 +169,9 @@ export function renderLedgerCard(d: ViewData): (HTMLElement | null)[] {
         div("card-split-side", identity(d), headline(d)),
         div("card-split-side", statement(d, items), details(d, other))
       ),
+      itemList(d),
       footer,
     ];
   }
-  return [
-    metaLine(d, headItem),
-    identity(d),
-    headline(d),
-    statement(d, items),
-    details(d, other),
-    footer,
-  ];
+  return [top(d, headItem), itemList(d), statement(d, items), details(d, other), footer];
 }

@@ -18,6 +18,9 @@ from record_views.cards.payload import build_card_payload, field_value
 from record_views.record import Record, RecordField
 
 CardConfig = RecordCard | TileCard | PropertyCard | LedgerCard
+
+# The most left-out ledger lines a card sends for the hover that lists them.
+_HIDDEN_LISTED = 25
 CardName = Literal["record", "tile", "property", "ledger"]
 CardSpec = CardConfig | CardName | None
 
@@ -169,7 +172,36 @@ def view_payload(
             accounting=config.accounting,
             currency=config.currency,
         )
+        if config.items and size in ("medium", "large"):
+            limit = config.max_items
+            drawn = config.items if limit is None else config.items[:limit]
+            payload.update(
+                items=[
+                    {
+                        "label": item.label,
+                        "amount": item.amount,
+                        "quantity": item.quantity,
+                        "detail": item.detail,
+                        "note": item.note,
+                        "id": item.id,
+                    }
+                    for item in drawn
+                ],
+                moreItems=len(config.items) - len(drawn),
+                # Hovering the count of the rest lists the first of them.
+                hiddenItems=[
+                    {"label": item.label, "amount": item.amount}
+                    for item in config.items[len(drawn) : len(drawn) + _HIDDEN_LISTED]
+                ],
+            )
     return payload
+
+
+def _trigger(result: Any, name: str) -> Any:
+    """Reads a trigger value from a component result."""
+    if isinstance(result, dict):
+        return result.get(name)
+    return getattr(result, name, None)
 
 
 def render_view(
@@ -180,6 +212,7 @@ def render_view(
     on_click: Callable[..., Any] | None,
     args: tuple[Any, ...] | None,
     kwargs: dict[str, Any] | None,
+    on_item: Callable[[str], Any] | None = None,
     component: Callable[..., Any] | None = None,
 ) -> bool:
     """Mounts the card component.
@@ -192,6 +225,7 @@ def render_view(
         on_click: Callback executed when the card is clicked.
         args: Positional arguments passed to on_click.
         kwargs: Keyword arguments passed to on_click.
+        on_item: Callback executed with the id of a clicked ledger item.
         component: The component callable to render with; defaults to the
             registered card component.
 
@@ -203,12 +237,16 @@ def render_view(
         if on_click is not None:
             on_click(*(args or ()), **(kwargs or {}))
 
+    def _item() -> None:
+        item = _trigger(st.session_state.get(key), "item")
+        if on_item is not None and item is not None:
+            on_item(item)
+
     result = (component or card_component())(
         key=key,
         data=payload,
         on_click_change=_clicked,
+        on_item_change=_item,
         width=width,
     )
-    if isinstance(result, dict):
-        return bool(result.get("click", False))
-    return bool(getattr(result, "click", False))
+    return bool(_trigger(result, "click"))

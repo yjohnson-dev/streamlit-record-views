@@ -94,6 +94,7 @@ def card(
     kwargs: dict[str, Any] | None = None,
     disabled: bool = False,
     help: str | None = None,
+    on_item: Callable[[str], Any] | None = None,
 ) -> bool:
     """Renders a card.
 
@@ -109,9 +110,13 @@ def card(
         args: Positional arguments passed to on_click.
         kwargs: Keyword arguments passed to on_click.
         disabled: When True, renders the card, and its hover card, in an
-            inactive non-interactive state.
+            inactive non-interactive state. Ledger lines with ids stay
+            clickable when on_item is given.
         help: Plain text shown in a tooltip when hovering or focusing the
             card. Newlines are preserved.
+        on_item: Callback executed with the id of a ledger item when the
+            item is clicked. Clicking an item does not count as clicking the
+            card.
 
     Returns:
         True if the card was clicked in the current script run, False otherwise.
@@ -145,6 +150,11 @@ def card(
             else None
         )
     payload = _drawn(config, record, view.size, disabled)
+    # Ledger lines are clickable only for an on_item callback, and never in a hover copy.
+    for drawn, clickable in ((payload, on_item is not None), (shown, False)):
+        for line in (drawn or {}).get("items") or []:
+            if not clickable:
+                line["id"] = None
     payload.update(
         help=help,
         contentWidth=width == "content",
@@ -158,4 +168,5 @@ def card(
         on_click=on_click,
         args=args,
         kwargs=kwargs,
+        on_item=on_item,
     )

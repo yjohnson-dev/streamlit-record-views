@@ -210,3 +210,146 @@
   color: var(--card-ledger-muted);
   overflow-wrap: anywhere;
 }
+
+/* Itemized lines: quantity, what the line is, and its amount. The lines share the list's
+   columns, so the widest quantity or amount sizes its column for every line. */
+.card-items {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 0.75rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid var(--st-border-color);
+  font-size: 0.875rem;
+}
+
+/* The quantity column fits the widest quantity up to 4.5rem; a longer one fades in it. */
+.card-items-qty {
+  grid-template-columns: fit-content(4.5rem) minmax(0, 1fr) auto;
+}
+
+.card-item {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  margin: 0 -0.5rem;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.card-item-qty {
+  text-align: right;
+  color: var(--card-ledger-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.card-item-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.card-item-label {
+  font-weight: 600;
+}
+
+.card-item-detail,
+.card-item-note {
+  color: var(--card-ledger-muted);
+}
+
+.card-item-note {
+  font-size: 0.8125rem;
+}
+
+.card-item-amount {
+  text-align: right;
+  font-weight: 500;
+}
+
+.card-item-open {
+  cursor: pointer;
+  transition: background-color 120ms;
+}
+
+.card-item-open:hover,
+.card-item-open:focus-visible {
+  background: color-mix(in srgb, var(--st-primary-color) 8%, transparent);
+}
+
+.card-item-open:hover .card-item-label,
+.card-item-open:focus-visible .card-item-label {
+  color: var(--st-primary-color);
+}
+
+.card-item-open:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--st-primary-color) 50%, transparent);
+}
+
+.card-items-more {
+  grid-column: 1 / -1;
+  padding-top: 0.25rem;
+  color: var(--card-ledger-muted);
+}
+
+/* The statement layout's top: type and title beside the headline, stacked when narrow. */
+.card-ledger-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+.card-ledger-id {
+  display: flex;
+  flex: 1 1 12rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.card-ledger-top .card-headline {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* A cut-off line in full beside the pointer, and the list of the lines left out. */
+.card-item-tip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 10rem;
+  max-width: min(22rem, calc(100vw - 1rem));
+  white-space: normal;
+  line-height: 1.45;
+  pointer-events: none;
+}
+
+.card-item-tip-title {
+  font-weight: 600;
+}
+
+.card-item-tip-muted {
+  color: color-mix(in srgb, var(--st-text-color) 60%, transparent);
+}
+
+.card-item-tip-amount {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.card-item-tip-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.card-item-tip-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

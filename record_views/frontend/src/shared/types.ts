@@ -36,6 +36,16 @@ export interface CardData {
   absent: string;
 }
 
+/** One line of an itemized ledger card; a line with an id is clickable. */
+export interface LedgerItemData {
+  label: string;
+  amount: number | null;
+  quantity: number | null;
+  detail: string | null;
+  note: string | null;
+  id: string | null;
+}
+
 /** Payload for cards rendered through shared/view. */
 export interface ViewData extends CardData {
   header: "status" | "caption" | null;
@@ -53,6 +63,11 @@ export interface ViewData extends CardData {
   description?: string | null;
   headline?: Labeled | null;
   currency?: string | null;
+  /** The lines a ledger card itemizes, and how many more it leaves out. */
+  items?: LedgerItemData[] | null;
+  moreItems?: number;
+  /** The first of the lines left out, which hovering their count lists. */
+  hiddenItems?: { label: string; amount: number | null }[] | null;
 }
 
 /** Payload for card(): view data that names the variant that draws it, as its hover card does. */

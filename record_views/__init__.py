@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from record_views import card_config
+from record_views.card_config import LedgerItem
 from record_views.cards.card import CardView, card
 from record_views.cards.config import CardSize
 from record_views.frames import RecordStyle, records_from_frame
@@ -24,6 +25,7 @@ __all__ = [
     "card",
     "card_config",
     "CardView",
+    "LedgerItem",
     "LineageEdge",
     "LineageGraph",
     "Link",

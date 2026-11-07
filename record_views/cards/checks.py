@@ -65,11 +65,12 @@ def check_hide(hide: Iterable[str]) -> tuple[str, ...]:
     return names
 
 
-def check_max_fields(max_fields: int | None) -> None:
-    """Validates the number of fields a card shows.
+def check_max_fields(max_fields: int | None, name: str = "max_fields") -> None:
+    """Validates a number of fields or lines a card shows.
 
     Args:
         max_fields: None, or a count of 0 or more.
+        name: The argument name, for the error message.
 
     Raises:
         ValueError: If max_fields is negative or not an integer.
@@ -80,7 +81,7 @@ def check_max_fields(max_fields: int | None) -> None:
         or max_fields < 0
     ):
         raise ValueError(
-            f"max_fields must be None or an integer of 0 or more, not "
+            f"{name} must be None or an integer of 0 or more, not "
             f"{max_fields!r}."
         )
 
