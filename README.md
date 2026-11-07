@@ -31,3 +31,16 @@ card(summary)
 lineage_flow([order, invoice], [Link(order, invoice, "billed as")])
 ```
 
+
+A `LedgerCard` can itemize lines before its fields, such as the lines of an order.
+Each `LedgerItem` takes a label and an amount, and optionally a quantity, a detail
+line, a note, and an id. Clicking a line with an id calls `card()`'s `on_item` with
+that id, apart from the card's own `on_click`.
+
+```python
+lines = [LedgerItem("HAL-9140", 2034.96, quantity=8, detail="Shackle, 1/2 in",
+                    note="7 of 8 shipped", id="160735881")]
+card(CardView(order, card_config.LedgerCard(headline="Amount", items=lines),
+              size="large"),
+     on_item=lambda item_id: st.write(f"Opened {item_id}"))
+```

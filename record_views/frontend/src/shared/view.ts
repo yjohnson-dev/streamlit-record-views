@@ -12,6 +12,7 @@ import {
 } from "./dom";
 import { displayText } from "./format";
 import { hoverShows } from "./hover";
+import { itemTips } from "./items";
 import { centerOn, GAP_PX } from "./position";
 import type { CardData, CardPayload, CardVariant, ViewData } from "./types";
 
@@ -151,8 +152,10 @@ function fit(node: HTMLElement, d: ViewData): void {
       target.scrollHeight > target.clientHeight + 1
     );
   }
+  // Ledger lines show their own text on hover, so they do not make the card clipped.
+  const faded = [...node.querySelectorAll(".card-overflowing")];
   const cut =
-    node.querySelector(".card-overflowing") !== null ||
+    faded.some((part) => !part.closest(".card-items")) ||
     SQUEEZE_CLASSES.some((name) => node.classList.contains(name));
   node.classList.toggle("card-clipped", cut);
 }
@@ -323,23 +326,30 @@ export function viewRenderer(
 
     const node = buildCard(data, data.variant, layouts[data.variant]);
     node.setAttribute("aria-label", ariaLabel(data));
+    // A clickable ledger line reports its id; anywhere else is a click on the card, unless the
+    // card is disabled. Lines are clickable only when card() was given on_item.
+    const activate = (target: EventTarget | null): void => {
+      const line = target instanceof Element ? target.closest<HTMLElement>("[data-item]") : null;
+      if (line?.dataset.item !== undefined) setTriggerValue("item", line.dataset.item);
+      else if (!data.disabled) setTriggerValue("click", true);
+    };
+    node.onclick = (event) => activate(event.target);
+    node.onkeydown = (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        activate(event.target);
+      }
+    };
     if (data.disabled) {
       node.setAttribute("role", "group");
       node.setAttribute("aria-disabled", "true");
     } else {
       node.setAttribute("role", "button");
       node.tabIndex = 0;
-      node.onclick = () => setTriggerValue("click", true);
-      node.onkeydown = (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          setTriggerValue("click", true);
-        }
-      };
     }
     root.replaceChildren(node);
 
-    const disposers: Cleanup[] = [trackFit(node, data)];
+    const disposers: Cleanup[] = [trackFit(node, data), itemTips(root, node, data)];
     if (supportsPopover && data.onHover !== "disabled") {
       const hover = data.hover ? { ...data.hover, disabled: data.disabled } : data;
       const [pop, cleanup] = expansion(node, data, () =>

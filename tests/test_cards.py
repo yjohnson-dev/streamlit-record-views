@@ -194,6 +194,27 @@ BAD = {
         lambda: CardView(PLANT, on_hover=CardView(PLANT, size="compact")),
         "size",
     ),
+    "a ledger item without a label": (
+        lambda: card_config.LedgerItem(" ", 3),
+        "label",
+    ),
+    "a ledger item amount that is text": (
+        lambda: card_config.LedgerItem("Seeds", "three"),
+        "amount",
+    ),
+    "ledger items that share an id": (
+        lambda: card_config.LedgerCard(
+            items=[
+                card_config.LedgerItem("Seeds", 3, id="a"),
+                card_config.LedgerItem("Soil", 5, id="a"),
+            ]
+        ),
+        "unique",
+    ),
+    "ledger items given as one string": (
+        lambda: card_config.LedgerCard(items="Seeds"),
+        "items",
+    ),
 }
 
 
@@ -351,3 +372,34 @@ def test_a_card_without_a_headline_leads_with_nothing(cards, config, size):
     assert cards.data["headline"] is None
     shown = [name for name, _ in cards.data["fields"]]
     assert shown == [f.label for f in PLANT.fields][: len(shown)]
+
+
+def test_a_ledger_itemizes_its_lines_and_reports_the_clicked_one(monkeypatch, cards):
+    from record_views.cards import view as card_view
+
+    config = card_config.LedgerCard(
+        headline="pH",
+        items=[
+            card_config.LedgerItem("Seeds", 3.5, quantity=2, detail="Basil", id="L1"),
+            ("Soil", 5),
+            card_config.LedgerItem("Pot", 12, note="Back-ordered", id="L3"),
+        ],
+        max_items=2,
+    )
+    seen = []
+    card(CardView(PLANT, config, size="large"), on_item=seen.append)
+    assert cards.data["items"] == [
+        {"label": "Seeds", "amount": 3.5, "quantity": 2, "detail": "Basil",
+         "note": None, "id": "L1"},
+        {"label": "Soil", "amount": 5, "quantity": None, "detail": None,
+         "note": None, "id": None},
+    ]
+    assert cards.data["moreItems"] == 1
+
+    # A clicked line sends its id; the card's own click stays separate.
+    monkeypatch.setattr(card_view.st, "session_state", {"card-ledger:P-1": {"item": "L1"}})
+    cards.calls[-1]["on_item_change"]()
+    assert seen == ["L1"]
+
+    card(CardView(PLANT, config, size="small"))
+    assert "items" not in cards.data

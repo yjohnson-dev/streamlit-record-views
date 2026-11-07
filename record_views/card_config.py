@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import numbers
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import KW_ONLY, dataclass
 from typing import Any, ClassVar, Literal
 
 from record_views.cards.checks import (
@@ -26,8 +27,9 @@ from record_views.cards.payload import (
     color_name,
 )
 from record_views.record import Color, RecordField
+from record_views.utils import clean_field_value, clean_value
 
-__all__ = ["LedgerCard", "PropertyCard", "RecordCard", "TileCard"]
+__all__ = ["LedgerCard", "LedgerItem", "PropertyCard", "RecordCard", "TileCard"]
 
 _PROPERTY_LAYOUTS = ("sheet", "chip", "split")
 _LEDGER_LAYOUTS = ("statement", "metric", "split")
@@ -224,6 +226,76 @@ class PropertyCard(_CardConfig):
         check_choice("layout", self.layout, _PROPERTY_LAYOUTS)
 
 
+def _number(name: str, value: Any) -> int | float | None:
+    """Normalizes a line's number, keeping None for a missing one."""
+    cleaned = clean_field_value(value)
+    if cleaned is None:
+        return None
+    if isinstance(cleaned, str) or not isinstance(cleaned, numbers.Real):
+        raise TypeError(
+            f"LedgerItem {name} must be a number or None, not {value!r}."
+        )
+    return cleaned if isinstance(cleaned, int) else float(cleaned)
+
+
+@dataclass(frozen=True)
+class LedgerItem:
+    """Describes one line of an itemized ledger, such as a line of an order.
+
+    Attributes:
+        label: What the line is, such as a SKU. Required, and not blank.
+        amount: The line's amount, formatted like the card's other
+            figures, or None.
+        quantity: How many, drawn before the label, or None.
+        detail: Text under the label, such as a description.
+        note: A short remark under the detail, such as "7 of 8 shipped".
+        id: What card()'s on_item receives when the line is clicked. A line
+            without an id is not clickable.
+
+    Raises:
+        ValueError: If label is missing or blank.
+        TypeError: If amount or quantity is not a number or None.
+    """
+
+    label: str
+    amount: int | float | None = None
+    _: KW_ONLY
+    quantity: int | float | None = None
+    detail: str | None = None
+    note: str | None = None
+    id: str | None = None
+
+    def __post_init__(self) -> None:
+        label = clean_value(self.label)
+        if not label:
+            raise ValueError("LedgerItem label is required.")
+        object.__setattr__(self, "label", label)
+        object.__setattr__(self, "amount", _number("amount", self.amount))
+        object.__setattr__(self, "quantity", _number("quantity", self.quantity))
+        for name in ("detail", "note", "id"):
+            object.__setattr__(self, name, clean_value(getattr(self, name)) or None)
+
+
+def _items(items: Iterable[LedgerItem | tuple[Any, ...]]) -> tuple[LedgerItem, ...]:
+    """Normalizes ledger items and checks that their ids are unique."""
+    if isinstance(items, (str, LedgerItem)):
+        raise TypeError("items must be a list of LedgerItem objects or tuples.")
+    lines = []
+    for item in items:
+        if isinstance(item, LedgerItem):
+            lines.append(item)
+        elif isinstance(item, tuple):
+            lines.append(LedgerItem(*item))
+        else:
+            raise TypeError(
+                f"items must hold LedgerItem objects or tuples, not {item!r}."
+            )
+    ids = [line.id for line in lines if line.id is not None]
+    if len(ids) != len(set(ids)):
+        raise ValueError("LedgerItem ids must be unique within a card.")
+    return tuple(lines)
+
+
 @dataclass(frozen=True, kw_only=True)
 class LedgerCard(_CardConfig):
     """Describes a quantified card led by a headline figure.
@@ -269,6 +341,14 @@ class LedgerCard(_CardConfig):
         accounting: Whether to present numeric values in accounting style:
             currency symbols and amounts in aligned columns, and negatives in
             parentheses.
+        items: The lines the card itemizes before its fields, such as the
+            lines of an order: LedgerItem objects, or tuples of LedgerItem
+            arguments. Medium and large cards draw them; smaller cards do
+            not. Each part of a line keeps to one row and fades when cut
+            off, and hovering the line shows it in full. card() passes the
+            id of a clicked line to on_item.
+        max_items: The number of lines drawn, followed by a count of the
+            rest that lists them on hover, or None for every line.
 
     Raises:
         TypeError: If hide is a string, or headline is not a string, a
@@ -276,7 +356,10 @@ class LedgerCard(_CardConfig):
         ValueError: If header, status_display, or layout is not a supported
             value, max_fields is negative or not an integer, hide contains
             an unknown name, color or status_color is not a supported color,
-            or currency is not a three-letter code.
+            currency is not a three-letter code, max_items is negative or not
+            an integer, or two items share an id.
+        TypeError: If items is a string or holds something other than
+            LedgerItem objects and tuples.
     """
 
     variant: ClassVar[str] = "ledger"
@@ -285,8 +368,12 @@ class LedgerCard(_CardConfig):
     layout: Literal["statement", "metric", "split"] = "statement"
     currency: str | None = None
     accounting: bool = False
+    items: Iterable[LedgerItem | tuple[Any, ...]] = ()
+    max_items: int | None = None
 
     def __post_init__(self) -> None:
         super().__post_init__()
         check_choice("layout", self.layout, _LEDGER_LAYOUTS)
         object.__setattr__(self, "currency", check_currency(self.currency))
+        object.__setattr__(self, "items", _items(self.items))
+        check_max_fields(self.max_items, "max_items")
